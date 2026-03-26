@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from django.contrib import admin, messages
 from django.db import transaction
+from django.db.models import Prefetch
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
 from django.utils import timezone
@@ -38,7 +39,12 @@ class ProductAdmin(admin.ModelAdmin):
     )
     search_fields = ("name", "sku")
     ordering = ("name",)
+    list_per_page = 50
     inlines = [ProductSizeInline]
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.prefetch_related("sizes")
 
     def image_preview(self, obj):
         if obj.image:
@@ -76,6 +82,7 @@ class ProductSizeAdmin(admin.ModelAdmin):
     list_display = ("product", "label", "stock", "reserved", "available")
     search_fields = ("product__name", "product__sku", "label")
     list_filter = ("label",)
+    list_select_related = ("product",)
 
     def available(self, obj):
         return obj.available()
@@ -125,6 +132,7 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline, OrderStatusHistoryInline]
     date_hierarchy = "created_at"
     ordering = ("-created_at",)
+    list_per_page = 50
 
     fields = (
         "status",
@@ -138,6 +146,12 @@ class OrderAdmin(admin.ModelAdmin):
     readonly_fields = ("reserved_applied", "stock_deducted", "shipped_at", "delivered_at")
 
     change_form_template = "admin/core/order/change_form.html"
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.prefetch_related(
+            Prefetch("items", queryset=OrderItem.objects.select_related("product"))
+        )
 
     def save_model(self, request, obj, form, change):
         if change and obj.pk:
@@ -238,6 +252,7 @@ class OrderAdmin(admin.ModelAdmin):
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ("order", "product", "size", "quantity")
     search_fields = ("order__id", "product__name", "product__sku", "size")
+    list_select_related = ("order", "product")
 
     def has_module_permission(self, request):
         return request.user.is_superuser
@@ -247,6 +262,7 @@ class OrderItemAdmin(admin.ModelAdmin):
 class OrderStatusHistoryAdmin(admin.ModelAdmin):
     list_display = ("order", "old_status", "new_status", "changed_at", "changed_by")
     readonly_fields = ("order", "old_status", "new_status", "changed_at", "changed_by")
+    list_select_related = ("order", "changed_by")
 
     def has_add_permission(self, request):
         return False

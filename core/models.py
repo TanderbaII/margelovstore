@@ -44,17 +44,34 @@ class Product(models.Model):
         return self.sale_price - self.purchase_price
     profit_per_item.short_description = "Прибыль за 1 шт."
 
+    def _prefetched_sizes(self):
+        cache = getattr(self, "_prefetched_objects_cache", {})
+        return cache.get("sizes")
+
     def has_sizes(self):
+        prefetched_sizes = self._prefetched_sizes()
+        if prefetched_sizes is not None:
+            return bool(prefetched_sizes)
         return self.sizes.exists()
     has_sizes.short_description = "Есть размеры?"
 
     def total_stock(self):
+        prefetched_sizes = self._prefetched_sizes()
+        if prefetched_sizes is not None:
+            if prefetched_sizes:
+                return sum(size.stock for size in prefetched_sizes)
+            return self.stock
         if self.has_sizes():
             return sum(s.stock for s in self.sizes.all())
         return self.stock
     total_stock.short_description = "Остаток"
 
     def total_reserved(self):
+        prefetched_sizes = self._prefetched_sizes()
+        if prefetched_sizes is not None:
+            if prefetched_sizes:
+                return sum(size.reserved for size in prefetched_sizes)
+            return self.reserved
         if self.has_sizes():
             return sum(s.reserved for s in self.sizes.all())
         return self.reserved
@@ -122,9 +139,16 @@ class Order(models.Model):
     def __str__(self):
         return f"Заказ #{self.id}"
 
+    def _prefetched_items(self):
+        cache = getattr(self, "_prefetched_objects_cache", {})
+        return cache.get("items")
+
     def total_sum(self):
         total = Decimal("0.00")
-        for item in self.items.select_related("product").all():
+        items = self._prefetched_items()
+        if items is None:
+            items = self.items.select_related("product").all()
+        for item in items:
             total += item.line_sum()
         return total
     total_sum.short_description = "Сумма заказа"
@@ -134,7 +158,10 @@ class Order(models.Model):
             return Decimal("0.00")
 
         total = Decimal("0.00")
-        for item in self.items.select_related("product").all():
+        items = self._prefetched_items()
+        if items is None:
+            items = self.items.select_related("product").all()
+        for item in items:
             total += item.profit()
         return total
     total_profit.short_description = "Прибыль заказа"
