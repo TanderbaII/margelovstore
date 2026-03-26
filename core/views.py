@@ -131,9 +131,10 @@ def quick_order_create(request, pk: int):
         return redirect("product_detail", pk=pk)
 
     try:
-        order = Order.objects.create(status=Order.Status.PROCESSING)
-        OrderItem.objects.create(order=order, product=product, size=size, quantity=quantity)
-        order.apply_status_transition(None, Order.Status.PROCESSING, changed_by_user=request.user)
+        with transaction.atomic():
+            order = Order.objects.create(status=Order.Status.PROCESSING)
+            OrderItem.objects.create(order=order, product=product, size=size, quantity=quantity)
+            order.apply_status_transition(None, Order.Status.PROCESSING, changed_by_user=request.user)
     except Exception as e:
         messages.error(request, f"Не получилось создать заказ: {e}")
         return redirect("product_detail", pk=pk)
