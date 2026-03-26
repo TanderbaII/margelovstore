@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Заказы</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f6fa;
+            color: #222;
+        }
+        .container {
+            width: 1100px;
+            max-width: calc(100% - 40px);
+            margin: 30px auto;
+        }
+        .topbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .topbar a {
+            text-decoration: none;
+            background: #1f6feb;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
+        }
+        .user-badge {
+            margin-left: auto;
+            color: #444;
+            font-weight: bold;
+        }
+        .day-block {
+            margin-bottom: 32px;
+        }
+        .day-title {
+            font-size: 24px;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #d0d7de;
+        }
+        .order-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px 18px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            margin-bottom: 14px;
+        }
+        .order-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .status {
+            font-weight: bold;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #eef2ff;
+        }
+        .meta {
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .items {
+            margin: 10px 0;
+            padding-left: 18px;
+        }
+        .summary {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .empty {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .messages {
+            margin-bottom: 16px;
+        }
+        .msg {
+            background: #eef6ff;
+            border-left: 4px solid #1f6feb;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <a href="/">Товары</a>
+            <a href="/orders/">Заказы</a>
+
+            {% if request.user.is_superuser %}
+                <a href="/panel/">Панель управления</a>
+            {% endif %}
+
+            <a href="{% url 'user_logout' %}">Выход</a>
+
+            <div class="user-badge">
+                Пользователь: {{ request.user.username }}
+            </div>
+        </div>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="msg">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <h1>Заказы по дням</h1>
+
+        {% if grouped_orders %}
+            {% for day, orders in grouped_orders.items %}
+                <div class="day-block">
+                    <div class="day-title">{{ day }}</div>
+
+                    {% for order in orders %}
+                        <div class="order-card">
+                            <div class="order-head">
+                                <div>
+                                    <strong>Заказ #{{ order.id }}</strong>
+                                </div>
+                                <div class="status">{{ order.get_status_display }}</div>
+                            </div>
+
+                            <div class="meta">
+                                Время: {{ order.created_at|date:"H:i" }}
+                            </div>
+
+                            <ul class="items">
+                                {% for item in order.items.all %}
+                                    <li>
+                                        {{ item.product.name }}
+                                        {% if item.size %} ({{ item.size }}){% endif %}
+                                        — {{ item.quantity }} шт.
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                            <div class="summary">
+                                Сумма: {{ order.total_sum }} |
+                                Прибыль:
+                                {% if order.status == 'delivered' %}
+                                    {{ order.total_profit }}
+                                {% else %}
+                                    0.00
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">Заказов пока нет.</div>
+        {% endif %}
+    </div>
+</body>
+</html>

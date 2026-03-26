@@ -1,0 +1,16 @@
+{% extends "admin/change_list.html" %}
+
+{% block content_title %}
+  {{ block.super }}
+
+  <div style="margin-top: 10px; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+    <strong>Показатели по текущему списку:</strong>
+    <div style="margin-top: 6px;">
+      <div>Выручка (сумма заказов): <strong>{{ total_revenue }}</strong></div>
+      <div>Суммарная прибыль: <strong>{{ total_profit_sum }}</strong></div>
+    </div>
+    <div style="margin-top: 6px; color: #666; font-size: 12px;">
+      Учитываются текущие фильтры и поиск в списке заказов.
+    </div>
+  </div>
+{% endblock %}

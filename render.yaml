@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: crm-diplom
+    runtime: python
+    plan: free
+    healthCheckPath: /login/
+    buildCommand: bash build.sh
+    startCommand: gunicorn config.wsgi:application
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: crm-diplom-db
+          property: connectionString
+      - key: SERVE_MEDIA
+        value: "True"
+      - key: DJANGO_SUPERUSER_USERNAME
+        sync: false
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
+
+databases:
+  - name: crm-diplom-db
+    plan: free

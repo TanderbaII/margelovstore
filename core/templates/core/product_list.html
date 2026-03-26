@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Товары</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f6fa;
+            color: #222;
+        }
+        .container {
+            width: 1100px;
+            max-width: calc(100% - 40px);
+            margin: 30px auto;
+        }
+        .topbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .topbar a {
+            text-decoration: none;
+            background: #1f6feb;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .messages {
+            margin-bottom: 16px;
+        }
+        .msg {
+            background: #eef6ff;
+            border-left: 4px solid #1f6feb;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+        .search-box {
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+        }
+        .search-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .search-row input {
+            flex: 1;
+            min-width: 240px;
+            padding: 10px 12px;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .search-row button,
+        .search-row a {
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 0;
+            background: #1f6feb;
+            color: white;
+            cursor: pointer;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        }
+        .card a {
+            text-decoration: none;
+            color: #111;
+        }
+        .muted {
+            color: #666;
+            margin-top: 6px;
+        }
+        .price {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .image {
+            width: 100%;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+        .empty {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .user-badge {
+            margin-left: auto;
+            color: #444;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <a href="/">Товары</a>
+            <a href="/orders/">Заказы</a>
+
+            {% if request.user.is_superuser %}
+                <a href="/panel/">Панель управления</a>
+            {% endif %}
+
+            <a href="{% url 'user_logout' %}">Выход</a>
+
+            <div class="user-badge">
+                Пользователь: {{ request.user.username }}
+            </div>
+        </div>
+
+        <h1>Товары</h1>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="msg">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="search-box">
+            <form method="get">
+                <div class="search-row">
+                    <input
+                        type="text"
+                        name="q"
+                        value="{{ query }}"
+                        placeholder="Поиск по названию или артикулу"
+                    >
+                    <button type="submit">Найти</button>
+                    <a href="/">Сбросить</a>
+                </div>
+            </form>
+        </div>
+
+        {% if products %}
+            <div class="grid">
+                {% for p in products %}
+                    <div class="card">
+                        <a href="{% url 'product_detail' p.id %}">
+                            {% if p.image %}
+                                <img class="image" src="{{ p.image.url }}" alt="{{ p.name }}">
+                            {% endif %}
+                            <h3>{{ p.name }}</h3>
+                        </a>
+
+                        <div class="muted">SKU: {{ p.sku }}</div>
+                        <div class="price">Цена: {{ p.sale_price }}</div>
+                        <div class="muted">Доступно: {{ p.available_stock }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty">По вашему запросу товары не найдены.</div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f6fa;
+            color: #222;
+        }
+        .container {
+            width: 1000px;
+            max-width: calc(100% - 40px);
+            margin: 30px auto;
+        }
+        .topbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .topbar a {
+            text-decoration: none;
+            background: #1f6feb;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
+        }
+        .user-badge {
+            margin-left: auto;
+            color: #444;
+            font-weight: bold;
+        }
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        }
+        .product-image {
+            max-width: 320px;
+            border-radius: 12px;
+            display: block;
+            margin-bottom: 20px;
+        }
+        .info {
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        form {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        label {
+            display: block;
+            margin: 12px 0 6px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 12px;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        button {
+            margin-top: 18px;
+            background: #16a34a;
+            color: white;
+            border: 0;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .messages {
+            margin-bottom: 16px;
+        }
+        .msg {
+            background: #eef6ff;
+            border-left: 4px solid #1f6feb;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <a href="/">Товары</a>
+            <a href="/orders/">Заказы</a>
+
+            {% if request.user.is_superuser %}
+                <a href="/panel/">Панель управления</a>
+            {% endif %}
+
+            <a href="{% url 'user_logout' %}">Выход</a>
+
+            <div class="user-badge">
+                Пользователь: {{ request.user.username }}
+            </div>
+        </div>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="msg">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="card">
+            <h1>{{ product.name }}</h1>
+
+            {% if product.image %}
+                <img class="product-image" src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% endif %}
+
+            <div class="info">
+                <div><strong>Артикул:</strong> {{ product.sku }}</div>
+                <div><strong>Цена продажи:</strong> {{ product.sale_price }}</div>
+                <div><strong>Закупочная цена:</strong> {{ product.purchase_price }}</div>
+                <div><strong>Остаток:</strong> {{ product.total_stock }}</div>
+                <div><strong>Резерв:</strong> {{ product.total_reserved }}</div>
+                <div><strong>Доступно:</strong> {{ product.available_stock }}</div>
+            </div>
+
+            <form method="post" action="{% url 'quick_order_create' product.pk %}">
+                {% csrf_token %}
+
+                {% if product.has_sizes %}
+                    <label for="size">Размер</label>
+                    <select name="size" id="size">
+                        <option value="">Выбери размер</option>
+                        {% for size in product.sizes.all %}
+                            <option value="{{ size.label }}">
+                                {{ size.label }} (остаток: {{ size.stock }}, резерв: {{ size.reserved }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+
+                <label for="quantity">Количество</label>
+                <input type="number" name="quantity" id="quantity" value="1" min="1">
+
+                <button type="submit">Создать заказ</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

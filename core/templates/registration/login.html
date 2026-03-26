@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход в CRM</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+        }
+        .login-box {
+            width: 380px;
+            margin: 100px auto;
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        h1 {
+            margin-top: 0;
+            text-align: center;
+            font-size: 24px;
+        }
+        label {
+            display: block;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 12px;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            margin-top: 18px;
+            padding: 12px;
+            border: 0;
+            border-radius: 8px;
+            background: #0d6efd;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .errornote {
+            color: #b00020;
+            margin-bottom: 10px;
+        }
+        .help {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+        .messages {
+            margin-bottom: 12px;
+        }
+        .msg {
+            background: #fff3cd;
+            border-left: 4px solid #f0ad4e;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>Вход в CRM</h1>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="msg">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if form.errors %}
+            <p class="errornote">Неверный логин или пароль.</p>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label for="id_username">Логин</label>
+            {{ form.username }}
+
+            <label for="id_password">Пароль</label>
+            {{ form.password }}
+
+            <button type="submit">Войти</button>
+        </form>
+
+        <div class="help">
+            Сотрудник входит только на сайт.  
+            Админ может отдельно входить в админку под своими данными.
+        </div>
+    </div>
+</body>
+</html>

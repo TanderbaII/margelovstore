@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Панель управления</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+        .container {
+            width: 1200px;
+            max-width: calc(100% - 40px);
+            margin: 30px auto;
+        }
+        .topbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .topbar a {
+            text-decoration: none;
+            background: #2563eb;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 10px;
+        }
+        .user-badge {
+            margin-left: auto;
+            color: #374151;
+            font-weight: bold;
+        }
+        h1 {
+            margin-bottom: 18px;
+        }
+        .messages {
+            margin-bottom: 18px;
+        }
+        .msg {
+            background: #eef6ff;
+            border-left: 4px solid #2563eb;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
+        .stat-title {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .filters,
+        .low-stock-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-buttons a {
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: #e5e7eb;
+            color: #111827;
+        }
+        .filter-buttons a.active {
+            background: #2563eb;
+            color: #fff;
+        }
+        .low-stock-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+        .day-block {
+            margin-bottom: 28px;
+        }
+        .day-title {
+            font-size: 24px;
+            margin-bottom: 14px;
+            border-bottom: 2px solid #d1d5db;
+            padding-bottom: 8px;
+        }
+        .order-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            margin-bottom: 14px;
+        }
+        .order-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .order-number {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-weight: bold;
+            background: #e0e7ff;
+        }
+        .meta {
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+        .items {
+            margin: 12px 0;
+            padding-left: 18px;
+        }
+        .summary {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+        .status-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+        .status-actions form {
+            margin: 0;
+        }
+        .status-actions button {
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+        .btn-processing {
+            background: #f59e0b;
+        }
+        .btn-shipped {
+            background: #2563eb;
+        }
+        .btn-delivered {
+            background: #16a34a;
+        }
+        .empty {
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <a href="/">Товары</a>
+            <a href="/orders/">Заказы</a>
+            <a href="/panel/">Панель управления</a>
+            <a href="/admin/">Django admin</a>
+            <a href="{% url 'user_logout' %}">Выход</a>
+
+            <div class="user-badge">
+                Администратор: {{ request.user.username }}
+            </div>
+        </div>
+
+        <h1>Панель управления заказами</h1>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="msg">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="cards">
+            <div class="stat-card">
+                <div class="stat-title">Всего заказов</div>
+                <div class="stat-value">{{ total_orders }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Сегодня заказов</div>
+                <div class="stat-value">{{ today_orders_count }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">В обработке</div>
+                <div class="stat-value">{{ processing_count }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Отправлено</div>
+                <div class="stat-value">{{ shipped_count }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Доставлено</div>
+                <div class="stat-value">{{ delivered_count }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Общая выручка</div>
+                <div class="stat-value">{{ total_revenue }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Общая прибыль</div>
+                <div class="stat-value">{{ total_profit }}</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <h3>Фильтр по статусу</h3>
+            <div class="filter-buttons">
+                <a href="{% url 'admin_dashboard' %}" class="{% if not status_filter %}active{% endif %}">Все</a>
+                <a href="{% url 'admin_dashboard' %}?status=processing" class="{% if status_filter == 'processing' %}active{% endif %}">В обработке</a>
+                <a href="{% url 'admin_dashboard' %}?status=shipped" class="{% if status_filter == 'shipped' %}active{% endif %}">Отправлен</a>
+                <a href="{% url 'admin_dashboard' %}?status=delivered" class="{% if status_filter == 'delivered' %}active{% endif %}">Доставлен</a>
+            </div>
+        </div>
+
+        <div class="low-stock-box">
+            <h3>Товары с низким остатком</h3>
+            {% if low_stock_products %}
+                <ul class="low-stock-list">
+                    {% for product in low_stock_products %}
+                        <li>{{ product.name }} ({{ product.sku }}) — доступно: {{ product.available_stock }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Все товары в норме.</p>
+            {% endif %}
+        </div>
+
+        {% if grouped_orders %}
+            {% for day, orders in grouped_orders.items %}
+                <div class="day-block">
+                    <div class="day-title">{{ day }}</div>
+
+                    {% for order in orders %}
+                        <div class="order-card">
+                            <div class="order-top">
+                                <div class="order-number">Заказ #{{ order.id }}</div>
+                                <div class="status-badge">{{ order.get_status_display }}</div>
+                            </div>
+
+                            <div class="meta">
+                                Время: {{ order.created_at|date:"H:i" }}
+                                {% if order.tracking_number %}
+                                    | Трек-номер: {{ order.tracking_number }}
+                                {% endif %}
+                            </div>
+
+                            <ul class="items">
+                                {% for item in order.items.all %}
+                                    <li>
+                                        {{ item.product.name }}
+                                        {% if item.size %} ({{ item.size }}){% endif %}
+                                        — {{ item.quantity }} шт.
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                            <div class="summary">
+                                <div>Сумма: {{ order.total_sum }}</div>
+                                <div>Прибыль: {{ order.total_profit }}</div>
+                                <div>Резерв: {% if order.reserved_applied %}Да{% else %}Нет{% endif %}</div>
+                                <div>Списано: {% if order.stock_deducted %}Да{% else %}Нет{% endif %}</div>
+                            </div>
+
+                            <div class="status-actions">
+                                <form method="post" action="{% url 'admin_change_order_status' order.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="status" value="processing">
+                                    <button type="submit" class="btn-processing">В обработке</button>
+                                </form>
+
+                                <form method="post" action="{% url 'admin_change_order_status' order.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="status" value="shipped">
+                                    <button type="submit" class="btn-shipped">Отправлен</button>
+                                </form>
+
+                                <form method="post" action="{% url 'admin_change_order_status' order.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="status" value="delivered">
+                                    <button type="submit" class="btn-delivered">Доставлен</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">Заказов не найдено.</div>
+        {% endif %}
+    </div>
+</body>
+</html>

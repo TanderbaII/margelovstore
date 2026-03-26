@@ -1,0 +1,24 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+  <h1>CRM Dashboard</h1>
+
+  <h2>Статистика</h2>
+  <ul>
+    <li><b>Сегодня:</b> заказов {{ c_today }}, выручка {{ r_today }}, прибыль {{ p_today }}</li>
+    <li><b>7 дней:</b> заказов {{ c_7 }}, выручка {{ r_7 }}, прибыль {{ p_7 }}</li>
+    <li><b>30 дней:</b> заказов {{ c_30 }}, выручка {{ r_30 }}, прибыль {{ p_30 }}</li>
+  </ul>
+
+  <h2>Товары, которые заканчиваются (доступно ≤ 1)</h2>
+  <ul>
+    {% for p in low_stock_products %}
+      <li>{{ p.name }} ({{ p.sku }}) — доступно: {{ p.available_stock }}</li>
+    {% empty %}
+      <li>Нет таких товаров</li>
+    {% endfor %}
+  </ul>
+
+  <p style="margin-top:20px;">
+    Открыть: <a href="/admin/">Админка</a>
+  </p>
+{% endblock %}

@@ -1,0 +1,272 @@
+[
+{
+  "model": "core.product",
+  "pk": 1,
+  "fields": {
+    "name": "Ремень HBA",
+    "sku": "BELT-HBA-001",
+    "image": "products/photo_85_2026-01-22_12-24-02.jpg",
+    "purchase_price": "300.00",
+    "sale_price": "1290.00",
+    "stock": 1,
+    "reserved": 1,
+    "import_uid": null,
+    "import_source": null
+  }
+},
+{
+  "model": "core.product",
+  "pk": 2,
+  "fields": {
+    "name": "Ботинки Rick Owens Geobusket Double Bumper",
+    "sku": "SHOES-RO-DB0001",
+    "image": "products/3.jpg",
+    "purchase_price": "5000.00",
+    "sale_price": "7990.00",
+    "stock": 0,
+    "reserved": 0,
+    "import_uid": null,
+    "import_source": null
+  }
+},
+{
+  "model": "core.product",
+  "pk": 3,
+  "fields": {
+    "name": "Футболка Bape x Mastermind",
+    "sku": "SHIRT-BAPEMM-001",
+    "image": "products/1_mpcb1tV.jpg",
+    "purchase_price": "1000.00",
+    "sale_price": "1850.00",
+    "stock": 0,
+    "reserved": 0,
+    "import_uid": "a351e6b30f45a5a252f3a32235d242475cf39bb6",
+    "import_source": "avito_active"
+  }
+},
+{
+  "model": "core.product",
+  "pk": 4,
+  "fields": {
+    "name": "Штаны-трансформер Balenciaga Cargo Camo на руках",
+    "sku": "PANTS-BLCG-001",
+    "image": "products/1_YU5Z3zL.jpg",
+    "purchase_price": "2800.00",
+    "sale_price": "4175.00",
+    "stock": 0,
+    "reserved": 0,
+    "import_uid": "28540b4bb7b1029a2f5dbedce02479a2f98c55b5",
+    "import_source": "avito_active"
+  }
+},
+{
+  "model": "core.product",
+  "pk": 5,
+  "fields": {
+    "name": "Сумка женская opium",
+    "sku": "BAG-BTYPE-001",
+    "image": "products/1.jpg",
+    "purchase_price": "650.00",
+    "sale_price": "2315.00",
+    "stock": 1,
+    "reserved": 1,
+    "import_uid": "548619d1a3ec602f4557122f3d25135b03966a3d",
+    "import_source": "avito_active"
+  }
+},
+{
+  "model": "core.product",
+  "pk": 6,
+  "fields": {
+    "name": "Широкие Джинсы Junya Watanabe spring/summer ss02 P",
+    "sku": "PANTS-WATANABE-001",
+    "image": "products/1.png",
+    "purchase_price": "1200.00",
+    "sale_price": "2490.00",
+    "stock": 0,
+    "reserved": 0,
+    "import_uid": "f7fb0f28b3fa2eb233bfb4c1affb68238bc4704d",
+    "import_source": "avito_archive"
+  }
+},
+{
+  "model": "core.product",
+  "pk": 7,
+  "fields": {
+    "name": "Футболка Kanye West One Box Tee",
+    "sku": "SHIRT-KW-001",
+    "image": "products/3_DvVabii.jpg",
+    "purchase_price": "700.00",
+    "sale_price": "2190.00",
+    "stock": 0,
+    "reserved": 0,
+    "import_uid": "47085f4a0a6998fc7ccd98951b17ef8482599f6e",
+    "import_source": "avito_archive"
+  }
+},
+{
+  "model": "core.product",
+  "pk": 8,
+  "fields": {
+    "name": "Кепка Major Head Trauma",
+    "sku": "CAP-HT-001",
+    "image": "products/2.jpg",
+    "purchase_price": "430.00",
+    "sale_price": "2190.00",
+    "stock": 0,
+    "reserved": 0,
+    "import_uid": "02c1017144b95562f59c0fe39beb35d18a7fea15",
+    "import_source": "avito_archive"
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 1,
+  "fields": {
+    "product": 2,
+    "label": "41",
+    "stock": 0,
+    "reserved": 0
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 2,
+  "fields": {
+    "product": 2,
+    "label": "42",
+    "stock": 0,
+    "reserved": 0
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 3,
+  "fields": {
+    "product": 2,
+    "label": "43",
+    "stock": 0,
+    "reserved": 0
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 4,
+  "fields": {
+    "product": 2,
+    "label": "44",
+    "stock": 0,
+    "reserved": 0
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 5,
+  "fields": {
+    "product": 2,
+    "label": "45",
+    "stock": 0,
+    "reserved": 0
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 6,
+  "fields": {
+    "product": 3,
+    "label": "M",
+    "stock": 0,
+    "reserved": 0
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 7,
+  "fields": {
+    "product": 3,
+    "label": "L",
+    "stock": 0,
+    "reserved": 0
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 8,
+  "fields": {
+    "product": 7,
+    "label": "1 size",
+    "stock": 0,
+    "reserved": 0
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 9,
+  "fields": {
+    "product": 7,
+    "label": "2 size",
+    "stock": 0,
+    "reserved": 0
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 10,
+  "fields": {
+    "product": 7,
+    "label": "3 size",
+    "stock": 0,
+    "reserved": 0
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 11,
+  "fields": {
+    "product": 6,
+    "label": "L",
+    "stock": 0,
+    "reserved": 0
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 12,
+  "fields": {
+    "product": 6,
+    "label": "XL",
+    "stock": 1,
+    "reserved": 0
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 13,
+  "fields": {
+    "product": 4,
+    "label": "S",
+    "stock": 1,
+    "reserved": 0
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 14,
+  "fields": {
+    "product": 4,
+    "label": "M",
+    "stock": 1,
+    "reserved": 1
+  }
+},
+{
+  "model": "core.productsize",
+  "pk": 15,
+  "fields": {
+    "product": 4,
+    "label": "L",
+    "stock": 1,
+    "reserved": 0
+  }
+}
+]
